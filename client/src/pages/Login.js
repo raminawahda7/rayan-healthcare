@@ -2,16 +2,22 @@ import React, { useState } from 'react';
 import { Button, Checkbox, Form, Input, message } from 'antd';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from '../redux/features/alertSlice';
 
 const Login = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const [loading, setLoading] = useState(false); // State for loading indicator
     const [formData, setFormData] = useState({ email: '', password: '', remember: true });
 
     const onFinish = async () => {
         setLoading(true); // Set loading state to true
         try {
+            dispatch(showLoading());
             const response = await axios.post('api/v1/user/login', formData);
+            dispatch(hideLoading());
             if (response.data.success) {
                 localStorage.setItem("token", response.data.token);
                 message.success("Login Successful!");
@@ -20,6 +26,7 @@ const Login = () => {
                 message.error(response.data.message);
             }
         } catch (error) {
+            dispatch(hideLoading());
             console.log(error);
             message.error("Something went wrong");
         } finally {

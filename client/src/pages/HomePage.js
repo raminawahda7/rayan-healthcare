@@ -5,7 +5,7 @@ const HomePage = () => {
     // login user data
     const getUserData = async () => {
         try {
-            const res = await axios.post(
+            await axios.post(
                 "/api/v1/user/getUserData",
                 {},
                 {
