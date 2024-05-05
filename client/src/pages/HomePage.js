@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
-import axios from 'axios';
+import axios from "axios";
+import React, { useEffect } from "react";
+import Layout from "./../components/Layout";
 
 const HomePage = () => {
     // login user data
@@ -18,14 +19,15 @@ const HomePage = () => {
             console.log(error);
         }
     };
-    useEffect(() => {
-        getUserData()
-    }, [])
-    return (
-        <div>
-            <h1>HomePage</h1>
-        </div>
-    )
-}
 
-export default HomePage
+    useEffect(() => {
+        getUserData();
+    }, []);
+    return (
+        <Layout>
+            <h1>Home Page</h1>
+        </Layout>
+    );
+};
+
+export default HomePage;
