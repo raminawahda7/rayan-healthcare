@@ -1,10 +1,10 @@
-import { message } from "antd";
+import { Badge, message } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../redux/features/userSlice";
 import "../styles/LayoutStyles.css";
-import { adminMenu, userMenu } from "./../data/data";
+import { adminMenu, doctorMenu, userMenu } from "./../data/data";
 
 const Layout = ({ children }) => {
     const { user } = useSelector((state) => state.user);
@@ -13,14 +13,19 @@ const Layout = ({ children }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        dispatch(logout());
         localStorage.clear();
+        dispatch(logout());
         message.success("Logout Successfully");
         navigate("/login");
     };
 
     const getSidebarMenu = () => {
-        return user?.isAdmin ? adminMenu : userMenu;
+        if (user?.isAdmin) {
+            return adminMenu
+        } if (user?.isDoctor) {
+            return doctorMenu(user._id)
+        }
+        return userMenu
     };
 
     return (
@@ -29,7 +34,7 @@ const Layout = ({ children }) => {
                 <div className="layout">
                     <div className="sidebar">
                         <div className="logo">
-                            <h6>Rayan Healthcare</h6>
+                            <h6>RAYAN HEALTHCARE</h6>
                             <hr />
                         </div>
                         <div className="menu">
@@ -50,8 +55,15 @@ const Layout = ({ children }) => {
                     </div>
                     <div className="content">
                         <div className="header">
-                            <div className="header-content">
-                                <i className="fa-solid fa-bell"></i>
+                            <div className="header-content" style={{ cursor: "pointer" }}>
+                                <Badge
+                                    count={user && user?.notification?.length}
+                                    onClick={() => {
+                                        navigate("/notification");
+                                    }}
+                                >
+                                    <i class="fa-solid fa-bell"></i>
+                                </Badge>
                                 <Link to="/profile">{user?.name}</Link>
                             </div>
                         </div>

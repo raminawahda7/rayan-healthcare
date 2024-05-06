@@ -21,6 +21,27 @@ export const userMenu = [
     },
 ];
 
+
+// doctor menu
+export const doctorMenu = (userId) => [
+    {
+        name: "Home",
+        path: "/",
+        icon: "fa-solid fa-house",
+    },
+    {
+        name: "Appointments",
+        path: "/doctor-appointments",
+        icon: "fa-solid fa-list",
+    },
+
+    {
+        name: "Profile",
+        path: `/doctor/profile/${userId}`,
+        icon: "fa-solid fa-user",
+    },
+];
+
 // admin menu
 export const adminMenu = [
     {
