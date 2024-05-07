@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import Layout from "./../../components/Layout";
+import { Table, message } from "antd";
 import axios from "axios";
-import { message, Table } from "antd";
+import React, { useEffect, useState } from "react";
+import Layout from "./../../components/Layout";
 
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
