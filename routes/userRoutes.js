@@ -10,7 +10,7 @@ const {
     deleteAllNotificationController,
     bookingAvailabilityController,
     userAppointmentsController,
-} = require("../controllers/userCtrl");
+} = require("../controllers/userController");
 
 const router = express.Router();
 // Routes
@@ -48,7 +48,7 @@ router.post("/book-appointment", authMiddleware, bookAppointmentController);
 
 // Booking Availability
 router.post(
-    "/booking-availbility",
+    "/booking-availability",
     authMiddleware,
     bookingAvailabilityController
 );

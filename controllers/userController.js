@@ -64,10 +64,10 @@ const loginController = async (req, res) => {
         res.status.send({ success: false, message: `Error in Login Controller ${error.message}` })
     }
 };
-
 const authController = async (req, res) => {
     try {
-        const user = await userModel.findOne({ _id: req.body.userId });
+        const user = await userModel.findById({ _id: req.body.userId });
+        user.password = undefined;
         if (!user) {
             return res.status(200).send({
                 message: "user not found",
@@ -76,10 +76,7 @@ const authController = async (req, res) => {
         } else {
             res.status(200).send({
                 success: true,
-                data: {
-                    name: user.name,
-                    email: user.email,
-                },
+                data: user,
             });
         }
     } catch (error) {
@@ -91,6 +88,7 @@ const authController = async (req, res) => {
         });
     }
 };
+
 
 // Doctor Controller
 const applyDoctorController = async (req, res) => {
@@ -145,7 +143,8 @@ const getAllDoctorsController = async (req, res) => {
 const getAllNotificationController = async (req, res) => {
     try {
         const user = await userModel.findOne({ _id: req.body.userId });
-        const seenotification = user.seennotification;
+        console.log(user);
+        const seennotification = user.seennotification;
         const notification = user.notification;
         seennotification.push(...notification);
         user.notification = [];

@@ -36,7 +36,7 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [true, "experience is required"],
     },
-    feesPerCunsaltation: {
+    feesPerCancelation: {
       type: Number,
       required: [true, "fee is required"],
     },
@@ -46,7 +46,7 @@ const doctorSchema = new mongoose.Schema(
     },
     timings: {
       type: Object,
-      required: [true, "wrok timing is required"],
+      required: [true, "work timing is required"],
     },
   },
   { timestamps: true }
