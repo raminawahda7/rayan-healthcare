@@ -18,15 +18,15 @@ const Profile = () => {
     console.log('values', values)
     try {
       dispatch(showLoading());
+      const startTime = values.startTime.format("HH:mm");
+      const endTime = values.endTime.format("HH:mm");
       const res = await axios.post(
         "/api/v1/doctor/updateProfile",
         {
           ...values,
           userId: user._id,
-          timings: [
-            moment(values.timings[0]).format("HH:mm"),
-            moment(values.timings[1]).format("HH:mm"),
-          ],
+          startTime,
+          endTime,
         },
         {
           headers: {
@@ -62,10 +62,6 @@ const Profile = () => {
         }
       );
       if (res.data.success) {
-        res.data.data.timings = [
-          moment(res.data.data.timings[0], "HH:mm"),
-          moment(res.data.data.timings[1], "HH:mm")
-        ]
         setDoctor(res.data.data);
       }
     } catch (error) {
@@ -85,7 +81,7 @@ const Profile = () => {
           layout="vertical"
           onFinish={handleFinish}
           className="m-3"
-          initialValues={{ ...doctor }}
+          initialValues={{ ...doctor, startTime: moment(doctor.startTime, "HH:mm"), endTime: moment(doctor.endTime, "HH:mm") }}
         >
           <h4 className="">Personal Details : </h4>
           <Row gutter={20}>
@@ -168,18 +164,11 @@ const Profile = () => {
               </Form.Item>
             </Col>
             <Col xs={24} md={24} lg={8}>
-              <Form.Item
-                label="Fees Per Cancelation"
-                name="feesPerCancelation"
-                required
-                rules={[{ required: true }]}
-              >
-                <Input type="text" placeholder="your contact no" />
+              <Form.Item label="Start Time" name="startTime" required>
+                <TimePicker format="HH:mm" />
               </Form.Item>
-            </Col>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item label="Timings" name="timings" required>
-                <TimePicker.RangePicker format="HH:mm" />
+              <Form.Item label="End Time" name="endTime" required>
+                <TimePicker format="HH:mm" />
               </Form.Item>
             </Col>
             <Col xs={24} md={24} lg={8}></Col>

@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import Layout from "../components/Layout";
-import { useParams } from "react-router-dom";
+import { DatePicker, TimePicker, message } from "antd";
 import axios from "axios";
-import { DatePicker, message, TimePicker } from "antd";
-import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { showLoading, hideLoading } from "../redux/features/alertSlice";
+import { useParams } from "react-router-dom";
+import Layout from "../components/Layout";
+import { hideLoading, showLoading } from "../redux/features/alertSlice";
+import "./../styles/LayoutStyles.css";
 
 const BookingPage = () => {
   const { user } = useSelector((state) => state.user);
   const params = useParams();
-  const [doctors, setDoctors] = useState([]);
+  const [doctor, setDoctor] = useState([]);
   const [date, setDate] = useState("");
-  const [time, setTime] = useState();
-  const [isAvailable, setIsAvailable] = useState(false);
+  const [time, setTime] = useState("");
+  const [isAvailable, setIsAvailable] = useState();
   const dispatch = useDispatch();
   // login user data
   const getUserData = async () => {
@@ -28,19 +28,24 @@ const BookingPage = () => {
         }
       );
       if (res.data.success) {
-        setDoctors(res.data.data);
+        setDoctor(res.data.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
-  // ============ handle availiblity
+
+  // handleAvailability function
   const handleAvailability = async () => {
     try {
       dispatch(showLoading());
       const res = await axios.post(
         "/api/v1/user/booking-availability",
-        { doctorId: params.doctorId, date, time },
+        {
+          doctorId: params.doctorId,
+          date,
+          time,
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -60,7 +65,7 @@ const BookingPage = () => {
       console.log(error);
     }
   };
-  // =============== booking func
+
   const handleBooking = async () => {
     try {
       setIsAvailable(true);
@@ -73,8 +78,8 @@ const BookingPage = () => {
         {
           doctorId: params.doctorId,
           userId: user._id,
-          doctorInfo: doctors,
-          userInfo: user,
+          doctorInfo: `${doctor.firstName} ${doctor.lastName}`,
+          userInfo: user.name,
           date: date,
           time: time,
         },
@@ -87,6 +92,8 @@ const BookingPage = () => {
       dispatch(hideLoading());
       if (res.data.success) {
         message.success(res.data.message);
+      } else {
+        message.error(res.data.message);
       }
     } catch (error) {
       dispatch(hideLoading());
@@ -94,52 +101,63 @@ const BookingPage = () => {
     }
   };
 
+
   useEffect(() => {
     getUserData();
     //eslint-disable-next-line
   }, []);
+
   return (
     <Layout>
-      <h3>Booking Page</h3>
-      <div className="container m-2">
-        {doctors && (
-          <div>
-            <h4>
-              Dr.{doctors.firstName} {doctors.lastName}
-            </h4>
-            <h4>Fees : {doctors.feesPerCancelation}</h4>
-            <h4>
-              Timings : {doctors.timings && doctors.timings[0]} -{" "}
-              {doctors.timings && doctors.timings[1]}{" "}
-            </h4>
-            <div className="d-flex flex-column w-50">
-              <DatePicker
-                aria-required={"true"}
-                className="m-2"
-                format="DD-MM-YYYY"
-                onChange={(value) => {
-                  setDate(moment(value).format("DD-MM-YYYY"));
-                }}
-              />
-              <TimePicker
-                aria-required={"true"}
-                format="HH:mm"
-                className="mt-3"
-                onChange={(value) => {
-                  setTime(moment(value).format("HH:mm"));
-                }}
-              />
-
-              <button
-                className="btn btn-primary mt-2"
-                onClick={handleAvailability}
-              >
-                Check Availability
-              </button>
-
-              <button className="btn btn-dark mt-2" onClick={handleBooking}>
-                Book Now
-              </button>
+      <div className="container">
+        <h3 className="text-center my-4">Book an Appointment</h3>
+        {doctor && (
+          <div className="card mx-auto mb-4" style={{ maxWidth: "350px" }}>
+            <div className="card-body">
+              <h5 className="card-title text-center">
+                Dr. {doctor.firstName} {doctor.lastName}
+              </h5>
+              <h6 className="card-subtitle mb-2 text-muted text-center">
+                Fees: {doctor.feesPerConsultation}
+              </h6>
+              <h6 className="card-subtitle mb-2 text-muted text-center">
+                Timings: {doctor.startTime} - {doctor.endTime}
+              </h6>
+              <div className="appoint-card-body">
+                <div className="d-flex flex-column w-50 mx-auto">
+                  <DatePicker
+                    className="m-2 date-picker"
+                    format="DD-MM-YYYY"
+                    onChange={(value) => {
+                      const selectedDate = value
+                        ? value.format("DD-MM-YYYY")
+                        : "";
+                      setDate(selectedDate);
+                    }}
+                  />
+                  <TimePicker
+                    format="HH:mm"
+                    className="m-2 time-picker"
+                    onChange={(time) => setTime(time && time.format("HH:mm"))}
+                  />
+                  <div className="d-flex justify-content-center">
+                    <button
+                      className="btn btn-primary mt-2 w-100"
+                      onClick={handleAvailability}
+                    >
+                      Check Availability
+                    </button>
+                  </div>
+                  <div className="d-flex justify-content-center">
+                    <button
+                      className="btn btn-dark mt-2 w-100"
+                      onClick={handleBooking}
+                    >
+                      Book Now
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

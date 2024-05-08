@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import EditAppointmentForm from "./components/EditAppointmentForm";
 import Spinner from "./components/Spinner";
 import ProtectedRoute from "./navigators/ProtectedRoute";
 import PublicRoute from "./navigators/PublicRoute";
@@ -14,6 +15,7 @@ import Doctors from "./pages/admin/Doctors";
 import Users from "./pages/admin/Users";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import Profile from "./pages/doctor/Profile";
+import AllAppointments from "./pages/admin/AllAppointments";
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
@@ -49,6 +51,14 @@ function App() {
               }
             />
             <Route
+              path="/admin/appointments"
+              element={
+                <ProtectedRoute>
+                  <AllAppointments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/doctor/profile/:id"
               element={
                 <ProtectedRoute>
@@ -61,6 +71,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <BookingPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/doctor/getAppointmentById/:appointmentId"
+              element={
+                <ProtectedRoute>
+                  <EditAppointmentForm />
                 </ProtectedRoute>
               }
             />

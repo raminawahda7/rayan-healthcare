@@ -15,6 +15,9 @@ const ApplyDoctor = () => {
   const navigate = useNavigate();
   //handle form
   const handleFinish = async (values) => {
+    const startTime = values.startTime.format("HH:mm");
+    const endTime = values.endTime.format("HH:mm");
+
     try {
       dispatch(showLoading());
       const res = await axios.post(
@@ -22,10 +25,8 @@ const ApplyDoctor = () => {
         {
           ...values,
           userId: user._id,
-          timings: [
-            moment(values.timings[0]).format("HH:mm"),
-            moment(values.timings[1]).format("HH:mm"),
-          ],
+          startTime,
+          endTime,
         },
         {
           headers: {
@@ -131,18 +132,11 @@ const ApplyDoctor = () => {
             </Form.Item>
           </Col>
           <Col xs={24} md={24} lg={8}>
-            <Form.Item
-              label="Fees Per Cancelation"
-              name="feesPerCancelation"
-              required
-              rules={[{ required: true }]}
-            >
-              <Input type="text" placeholder="your contact no" />
+            <Form.Item label="Start Time" name="startTime" required>
+              <TimePicker format="HH:mm" />
             </Form.Item>
-          </Col>
-          <Col xs={24} md={24} lg={8}>
-            <Form.Item label="Timings" name="timings" required>
-              <TimePicker.RangePicker format="HH:mm" />
+            <Form.Item label="End Time" name="endTime" required>
+              <TimePicker format="HH:mm" />
             </Form.Item>
           </Col>
           <Col xs={24} md={24} lg={8}></Col>

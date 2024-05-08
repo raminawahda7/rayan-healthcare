@@ -2,6 +2,7 @@ const express = require("express");
 const {
   getAllUsersController,
   getAllDoctorsController,
+  getAllAppointmentsController,
   changeAccountStatusController,
 } = require("../controllers/adminController");
 const authMiddleware = require("../middlewares/authMiddleware");
@@ -13,6 +14,9 @@ router.get("/getAllUsers", authMiddleware, getAllUsersController);
 
 //GET METHOD || DOCTORS
 router.get("/getAllDoctors", authMiddleware, getAllDoctorsController);
+
+//GET METHOD || APPOINTMENTS
+router.get("/get-all-appointments", authMiddleware, getAllAppointmentsController);
 
 //POST ACCOUNT STATUS
 router.post(

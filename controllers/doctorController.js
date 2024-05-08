@@ -2,6 +2,7 @@
 const appointmentModel = require("../models/appointmentModel");
 const doctorModel = require("../models/doctorModel");
 const userModel = require("../models/userModels");
+const moment = require('moment');
 
 const getDoctorInfoController = async (req, res) => {
   try {
@@ -49,7 +50,7 @@ const getDoctorByIdController = async (req, res) => {
     const doctor = await doctorModel.findOne({ _id: req.body.doctorId });
     res.status(200).send({
       success: true,
-      message: "Sigle Doc Info Fetched",
+      message: "Single Doc Info Fetched",
       data: doctor,
     });
   } catch (error) {
@@ -57,7 +58,7 @@ const getDoctorByIdController = async (req, res) => {
     res.status(500).send({
       success: false,
       error,
-      message: "Erro in Single docot info",
+      message: "Error in Single Doctor info",
     });
   }
 };
@@ -80,6 +81,51 @@ const doctorAppointmentsController = async (req, res) => {
       error,
       message: "Error in Doc Appointments",
     });
+  }
+};
+
+const doctorUserAppointmentsController = async (req, res) => {
+  try {
+    const appointmentId = req.body.appointmentId;
+    const appointment = await appointmentModel.findOne({ _id: appointmentId });
+
+    if (!appointment) {
+      return res.status(404).send({ message: "Appointment not found" });
+    }
+
+    res.status(200).send({
+      success: true,
+      message: "Appointment fetched successfully",
+      data: appointment,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      error,
+      message: "Error in fetching appointment",
+    });
+  }
+};
+
+const updateAppointmentController = async (req, res) => {
+  try {
+    const { date, time, treatments, appointmentId } = req.body;
+    const formattedDate = moment(date, 'DD-MM-YYYY').toDate();
+
+    const updatedAppointment = await appointmentModel.findByIdAndUpdate(
+      appointmentId,
+      { $set: { date: formattedDate, time, treatments } },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).send({ message: "Appointment not found" });
+    }
+    res.status(200).send({ success: true, message: "Appointment updated successfully", appointment: updatedAppointment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Error updating appointment" });
   }
 };
 
@@ -117,5 +163,7 @@ module.exports = {
   updateProfileController,
   getDoctorByIdController,
   doctorAppointmentsController,
+  doctorUserAppointmentsController,
+  updateAppointmentController,
   updateStatusController,
 };
