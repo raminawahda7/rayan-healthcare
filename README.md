@@ -93,4 +93,46 @@ The application provides the following API endpoint:
   - **Node.js**: JavaScript runtime environment for building scalable server-side applications
   - **JWT**: JSON Web Token for user authentication and authorization
   - **Bcrypt**: Password hashing library for secure password storage
-
+## Fil structre:
+```
+RayanHealthcare:
+├── .env
+├── .gitignore
+├── .vscode/
+├── client/
+│   ├── package.json
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── manifest.json
+│   │   └── robots.txt
+│   ├── README.md
+│   └── src/
+│       ├── App.css
+│       ├── App.js
+│       ├── App.test.js
+│       ├── components/
+│       ├── data/
+│       ├── index.css
+│       ├── index.js
+│       ├── navigators/
+│       ├── pages/
+│       └── redux/
+├── config/
+│   └── db.js
+├── controllers/
+│   ├── adminController.js
+│   ├── doctorController.js
+│   └── userController.js
+├── middlewares/
+│   └── authMiddleware.js
+├── models/
+│   ├── appointmentModel.js
+│   ├── doctorModel.js
+│   └── userModels.js
+├── package.json
+├── routes/
+│   ├── adminRoutes.js
+│   ├── doctorRoutes.js
+│   └── userRoutes.js
+└── server.js
+```
