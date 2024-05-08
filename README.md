@@ -5,7 +5,7 @@
 This document provides an overview of the functionalities available in the Doctor Appointment Management System application for different types of users: 
 Doctor, User, and Admin (Finance Person). Each user type has specific actions they can perform within the system.
 
-## UML Activity Diagram [Link]([https://openai.com](https://drive.google.com/file/d/1GYz8nHfZqEKVResAeD5nyhZ0rXQPd4GP/view?usp=sharing))
+## UML Activity Diagram [Link](https://drive.google.com/file/d/1GYz8nHfZqEKVResAeD5nyhZ0rXQPd4GP/view?usp=sharing)
 ## Use Cases with related file to these cases
 
 ## Doctor
