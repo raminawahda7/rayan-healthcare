@@ -53,7 +53,7 @@ Follow these steps to run the application:
 1. **Clone the repository:**
     Open your terminal and run the following command:
     ```bash
-    git clone <repository_url>
+    git clone https://github.com/raminawahda7/rayan-healthcare.git
     ```
 2. **Install the dependencies:**
     ```bash
