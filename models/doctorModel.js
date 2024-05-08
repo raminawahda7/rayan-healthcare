@@ -36,17 +36,17 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [true, "experience is required"],
     },
-    feesPerCancelation: {
-      type: Number,
-      required: [true, "fee is required"],
+    startTime: {
+      type: String,
+      required: [true, "start time is required"],
+    },
+    endTime: {
+      type: String,
+      required: [true, "end time is required"],
     },
     status: {
       type: String,
       default: "pending",
-    },
-    timings: {
-      type: Object,
-      required: [true, "work timing is required"],
     },
   },
   { timestamps: true }

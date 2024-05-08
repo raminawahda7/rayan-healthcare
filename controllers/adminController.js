@@ -1,5 +1,6 @@
 const doctorModel = require("../models/doctorModel");
 const userModel = require("../models/userModels");
+const appointmentModel = require("../models/appointmentModel");
 
 const getAllUsersController = async (req, res) => {
     try {
@@ -66,8 +67,27 @@ const changeAccountStatusController = async (req, res) => {
     }
 };
 
+const getAllAppointmentsController = async (req, res) => {
+    try {
+        const appointments = await appointmentModel.find();
+        res.status(200).send({
+            success: true,
+            message: "All Appointments Fetched Successfully",
+            data: appointments,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: "Error While Fetching All Appointments",
+        });
+    }
+};
+
 module.exports = {
     getAllDoctorsController,
     getAllUsersController,
+    getAllAppointmentsController,
     changeAccountStatusController,
 };

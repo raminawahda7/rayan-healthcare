@@ -134,7 +134,7 @@ const getAllDoctorsController = async (req, res) => {
         res.status(500).send({
             success: false,
             error,
-            message: "Error WHile Fetching Doctor",
+            message: "Error While Fetching Doctor",
         });
     }
 };
@@ -187,19 +187,51 @@ const deleteAllNotificationController = async (req, res) => {
     }
 };
 
-
-// Booking Controller
 const bookAppointmentController = async (req, res) => {
     try {
-        req.body.date = moment(req.body.date, "DD-MM-YYYY").toISOString();
-        req.body.time = moment(req.body.time, "HH:mm").toISOString();
-        req.body.status = "pending";
-        const newAppointment = new appointmentModel(req.body);
+        const date = moment(req.body.date, "DD-MM-YYYY").utc();
+        const startTime = moment(req.body.time, "HH:mm").utc();
+        const doctorId = req.body.doctorId;
+        const doctor = await doctorModel.findById(doctorId);
+        if (!doctor) {
+            return res.status(404).send({
+                message: "Doctor Not Found",
+                success: false,
+            });
+        }
+        const start = moment(doctor.startTime, "HH:mm").utc();
+        const end = moment(doctor.endTime, "HH:mm").utc();
+        if (!moment(startTime).isBetween(start, end, undefined, "[]")) {
+            return res.status(400).send({
+                message: "Selected Time Is Not Within Doctor's Available Range",
+                success: false,
+            });
+        }
+        const existingAppointment = await appointmentModel.findOne({
+            doctorId,
+            date,
+            time: startTime,
+            status: "approved"
+        });
+        if (existingAppointment) {
+            return res.status(400).send({
+                message: "Appointment Already Booked For This Time Slot",
+                success: false,
+            });
+        }
+        const newAppointment = new appointmentModel({
+            doctorId,
+            userId: req.body.userId,
+            date,
+            time: startTime,
+            doctorInfo: req.body.doctorInfo,
+            userInfo: req.body.userInfo,
+        });
         await newAppointment.save();
-        const user = await userModel.findOne({ _id: req.body.doctorInfo.userId });
+        const user = await userModel.findOne({ _id: req.body.userId });
         user.notification.push({
             type: "New-appointment-request",
-            message: `A nEw Appointment Request from ${req.body.userInfo.name}`,
+            message: `A New Appointment Requested by ${req.body.userInfo}`,
             onCLickPath: "/user/appointments",
         });
         await user.save();
@@ -207,49 +239,61 @@ const bookAppointmentController = async (req, res) => {
             success: true,
             message: "Appointment Book successfully",
         });
+        return res.status(200).send({
+            success: true,
+            message: "Appointment Booked Successfully",
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
             error,
-            message: "Error While Booking Appointment",
+            message: "Error In Booking Appointment",
         });
     }
 };
-
+// Checking Availability 
 const bookingAvailabilityController = async (req, res) => {
     try {
-        const date = moment(req.body.date, "DD-MM-YY").toISOString();
-        const fromTime = moment(req.body.time, "HH:mm")
-            .subtract(1, "hours")
-            .toISOString();
-        const toTime = moment(req.body.time, "HH:mm").add(1, "hours").toISOString();
+        const date = moment(req.body.date, "DD-MM-YYYY").utc();
+        const startTime = moment(req.body.time, "HH:mm").utc();
         const doctorId = req.body.doctorId;
+        const doctor = await doctorModel.findById(doctorId);
+        if (!doctor) {
+            return res.status(404).send({
+                message: "Doctor not found",
+                success: false,
+            });
+        }
+        const start = moment(doctor.startTime, "HH:mm").utc();
+        const end = moment(doctor.endTime, "HH:mm").utc();
+        if (!moment(startTime).isBetween(start, end, undefined, "[]")) {
+            return res.status(200).send({
+                message: "Appointment Not Available",
+                success: false,
+            });
+        }
         const appointments = await appointmentModel.find({
             doctorId,
             date,
-            time: {
-                $gte: fromTime,
-                $lte: toTime,
-            },
+            time: startTime,
         });
         if (appointments.length > 0) {
             return res.status(200).send({
-                message: "Appointments not Available at this time",
-                success: true,
-            });
-        } else {
-            return res.status(200).send({
-                success: true,
-                message: "Appointments available",
+                message: "Appointment Not Available",
+                success: false,
             });
         }
+        return res.status(200).send({
+            success: true,
+            message: "Appointment Available",
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
             error,
-            message: "Error In Booking",
+            message: "Error Checking Appointment Availability",
         });
     }
 };

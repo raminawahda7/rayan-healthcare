@@ -51,7 +51,7 @@ const Appointments = () => {
       render: (text, record) => (
         <span>
           {moment(record.date).format("DD-MM-YYYY")} &nbsp;
-          {moment(record.time).format("HH:mm")}
+          {record.time}
         </span>
       ),
     },
@@ -63,7 +63,7 @@ const Appointments = () => {
 
   return (
     <Layout>
-      <h1>Appoinmtnets List</h1>
+      <h1>Visits List</h1>
       <Table columns={columns} dataSource={appointments} />
     </Layout>
   );

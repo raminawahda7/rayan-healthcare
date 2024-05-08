@@ -19,17 +19,28 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
     },
     date: {
-      type: String,
+      type: Date,
       required: true,
-    },
-    status: {
-      type: String,
-      required: true,
-      default: "pending",
     },
     time: {
       type: String,
       required: true,
+    },
+    treatments: [{
+      _id: false,
+      treatmentName: {
+        type: String,
+        required: false,
+      },
+      value: {
+        type: Number,
+        required: false,
+      },
+    }],
+    status: {
+      type: String,
+      required: true,
+      default: "pending",
     },
   },
   { timestamps: true }
